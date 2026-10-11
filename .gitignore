@@ -218,3 +218,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+venv/
+node_modules/
+.ipynb_checkpoints/
+data/*.csv
+
+!data/retail_campaign_sample.csv
