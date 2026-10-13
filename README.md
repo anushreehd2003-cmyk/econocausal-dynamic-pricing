@@ -26,7 +26,7 @@ Standard ML predicts correlation, not causation. A model that flags a user as li
     pip install -r backend/requirements.txt
 
 ## Progress
-- [ ] Week 1: Causal DAG (DoWhy) and dashboard scaffolding
+- [ ] Week 1: Causal DAG (DoWhy) done and dashboard scaffolding in progress
 - [ ] Week 2: Double ML training and uplift curves
 - [ ] Mid Review: refutation tests and data load validation
 - [ ] Week 3: SciPy budget optimizer and allocation matrix UI
