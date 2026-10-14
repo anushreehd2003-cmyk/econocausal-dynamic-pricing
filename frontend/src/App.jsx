@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import UploadView from "./components/UploadView";
 import BudgetView from "./components/BudgetView";
+import UpliftView from "./components/UpliftView";
 
 export default function App() {
   const [tab, setTab] = useState("upload");
@@ -25,12 +26,16 @@ export default function App() {
         <button className={tab === "budget" ? "active" : ""} onClick={() => setTab("budget")}>
           2. Budget
         </button>
+        <button className={tab === "uplift" ? "active" : ""} onClick={() => setTab("uplift")}>
+          3. Uplift
+        </button>
       </div>
 
       {tab === "upload" && <UploadView dataset={dataset} setDataset={setDataset} />}
       {tab === "budget" && (
         <BudgetView settings={settings} setSettings={setSettings} dataset={dataset} />
       )}
+      {tab === "uplift" && <UpliftView dataset={dataset} />}
     </div>
   );
 }
