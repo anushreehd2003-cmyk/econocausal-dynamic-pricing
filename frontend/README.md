@@ -19,3 +19,8 @@ If you are developing a production application, we recommend using TypeScript wi
     cd frontend
     npm install
     npm run dev
+
+    ## Dashboard preview
+![Upload](docs/screenshots/upload.png)
+![Budget](docs/screenshots/budget.png)
+![Uplift](docs/screenshots/uplift.png)
