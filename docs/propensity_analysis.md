@@ -4,7 +4,8 @@
 - **Model:** logistic regression on the five confounders, 5-fold cross-fitted
 - **AUC:** 0.718
 - **Largest imbalance before weighting:** days_since_last_purchase (SMD 0.751)
-- **Largest imbalance after IPW:** age (|SMD| 0.020); days_since_last_purchase fell to |SMD| 0.022
+
+- **Largest imbalance after IPW:** days_since_last_purchase (|SMD| 0.022), down from 0.751
 - **Effective sample size after IPW:** 6726 of 10000
 - **Overlap:** treated scores 0.128 to 0.990, untreated 0.127 to 0.984
 

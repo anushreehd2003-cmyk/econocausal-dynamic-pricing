@@ -1,0 +1,6 @@
+,smd_before,smd_after_matching
+age,0.0225,0.0176
+income,-0.0569,-0.0327
+loyalty_member,-0.2839,-0.0027
+past_purchases,-0.1905,0.0295
+days_since_last_purchase,0.7512,-0.0003
