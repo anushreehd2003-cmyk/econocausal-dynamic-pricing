@@ -1,0 +1,8 @@
+part,test,original_effect,refuted_effect,p_value,verdict
+A: DoWhy (linear),placebo_treatment,0.0356,0.0048,0.3147,
+A: DoWhy (linear),random_common_cause,0.0356,0.0356,0.4606,
+A: DoWhy (linear),data_subset,0.0356,0.0381,0.3247,
+B: Double ML,placebo_treatment,0.0331,-0.0047,,pass
+B: Double ML,random_common_cause,0.0331,0.0305,,pass
+B: Double ML,data_subset_80pct,0.0331,0.0407,,pass
+B: Double ML,omit_days_since_last_purchase,0.0331,-0.0606,,expected to differ
