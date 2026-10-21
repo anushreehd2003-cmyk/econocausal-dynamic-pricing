@@ -1,0 +1,5 @@
+model,qini_coefficient,avg_uplift_top_10pct,avg_uplift_top_30pct,avg_uplift_top_50pct
+Causal forest DML,0.721,0.1471,0.119,0.103
+Linear DML,0.7153,0.1511,0.1255,0.1027
+Standard model (targets least likely to buy),0.0785,0.0421,0.0469,0.0451
+Best possible ranking (ceiling),1.0,0.2232,0.1641,0.1239
