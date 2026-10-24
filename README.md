@@ -12,6 +12,24 @@ Standard ML predicts correlation, not causation. A model that flags a user as li
 - **Optimization Solver** (SciPy): optimal discount allocation under a budget
 - **Experimentation UI** (React, Plotly): uplift curves and allocation dashboard
 
+## Week 1 Results
+- Synthetic retail data (10,000 customers) with confounded discount assignment
+- Causal DAG in DoWhy: confounders -> discount -> purchased
+- The naive comparison makes a $20 discount look harmful (-0.097); backdoor adjustment gives +0.039 against a true average effect of +0.042
+- Dashboard with Upload, Budget and Uplift views
+
+See `docs/week1_summary.md` and `backend/notebooks/01_causal_walkthrough.ipynb`.
+
+## Week 2 Results
+- Propensity model (AUC 0.718) confirms discounts were not random; weighting cut the largest imbalance from 0.751 to 0.022
+- Matching: 4,197 of 4,244 discounted customers matched; naive -0.084 became +0.047 against a true +0.049
+- Double ML (EconML causal forest) on 3,000 held-out customers: correlation with true individual effects 0.82 ($10) and 0.71 ($20)
+- Qini coefficient 0.72 for causal forest DML vs 0.08 for a standard purchase-prediction model
+- Refutation tests: placebo near zero, random confounder and subsets stable; dropping the key confounder flips the estimate
+- Dashboard shows real Qini curves and filters 10,000 predicted effects
+
+Details: `docs/propensity_analysis.md`, `docs/matching_analysis.md`, `docs/dml_analysis.md`, `docs/refutation_analysis.md`, `docs/model_comparison.md`.
+
 ## Project Structure
 - `backend/src`: causal engine, optimizer, API
 - `backend/notebooks`: experiments and analysis
@@ -24,6 +42,14 @@ Standard ML predicts correlation, not causation. A model that flags a user as li
     python -m venv venv
     venv\Scripts\activate
     pip install -r backend/requirements.txt
+    python backend\src\generate_data.py
+    python backend\src\dml_engine.py
+    python backend\src\model_comparison.py
+    python backend\src\export_demo.py
+    python -m pytest backend\tests -v
+
+Optional analyses: `causal_graph.py`, `propensity.py`, `matching.py`, `refutation.py` (all in `backend/src`).
+The dashboard demo data is already committed in `frontend/public/demo`.
 
 ## Progress
 - [ ] Week 1: Causal DAG (DoWhy) done and dashboard scaffolding in progress
@@ -31,3 +57,5 @@ Standard ML predicts correlation, not causation. A model that flags a user as li
 - [ ] Mid Review: refutation tests and data load validation
 - [ ] Week 3: SciPy budget optimizer and allocation matrix UI
 - [ ] Week 4: REST API, drift detector and final polish
+
+
