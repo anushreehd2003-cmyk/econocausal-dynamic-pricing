@@ -5,7 +5,7 @@ React + Plotly dashboard for the EconoCausal project.
 ## Views
 - **Upload data**: load a historical campaign CSV and validate its columns
 - **Budget**: set the total budget and allowed discount levels
-- **Uplift**: Qini and uplift charts (placeholder curves until the Double ML model is connected in Week 2)
+- **Uplift**: real Qini curves and filterable Double ML predicted effects for 10,000 customers (demo data in `public/demo`)
 
 ## Run
     npm install

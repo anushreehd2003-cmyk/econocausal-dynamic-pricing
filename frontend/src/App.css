@@ -23,3 +23,13 @@ th { background: #f0f4f8; }
 label { display: block; margin: 12px 0 4px; font-weight: bold; }
 input[type="number"] { padding: 8px; width: 180px; font-size: 14px; }
 .checks label { display: inline-block; margin-right: 16px; font-weight: normal; }
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 4px 24px;
+  align-items: start;
+}
+select { padding: 8px; font-size: 14px; }
+input[type="range"] { width: 100%; }
+pre { background: #f0f4f8; padding: 10px; border-radius: 6px; overflow-x: auto; }
+.small { font-size: 13px; color: #52606d; }
