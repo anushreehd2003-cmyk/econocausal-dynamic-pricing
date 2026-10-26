@@ -26,13 +26,7 @@ Standard ML predicts correlation, not causation. A model that flags a user as li
 - **Optimization Solver** (SciPy): optimal discount allocation under a budget
 - **Experimentation UI** (React, Plotly): uplift curves and allocation dashboard
 
-## Week 1 Results
-- Synthetic retail data (10,000 customers) with confounded discount assignment
-- Causal DAG in DoWhy: confounders -> discount -> purchased
-- The naive comparison makes a $20 discount look harmful (-0.097); backdoor adjustment gives +0.039 against a true average effect of +0.042
-- Dashboard with Upload, Budget and Uplift views
 
-See `docs/week1_summary.md` and `backend/notebooks/01_causal_walkthrough.ipynb`.
 
 ## Project Structure
 - `backend/src`: data generator, causal graph (later: DML engine, optimizer, API)
