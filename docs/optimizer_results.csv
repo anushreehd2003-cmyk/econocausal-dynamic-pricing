@@ -1,0 +1,5 @@
+strategy,customers_targeted,spend,predicted_extra_revenue,true_extra_revenue,true_extra_purchases,share_with_positive_true_effect
+"Optimizer (exact, predicted effects)",138,1500.0,1553.281,1666.9397,15.9462,0.9855
+Greedy (value per dollar),141,1500.0,1544.7371,1687.0026,16.1472,0.9858
+Blanket $10 (random customers),150,1500.0,90.1191,206.1334,3.6347,0.6267
+"Oracle (exact, TRUE effects: ceiling)",149,1500.0,1271.8928,2128.0017,22.2408,1.0
