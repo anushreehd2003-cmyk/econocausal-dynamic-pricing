@@ -58,7 +58,7 @@ Optional analyses: `causal_graph.py`, `propensity.py`, `matching.py` and `refuta
 ![Upload](docs/screenshots/upload.png)
 ![Budget](docs/screenshots/budget.png)
 ![Uplift](docs/screenshots/uplift.png)
-
+![Allocation](docs/screenshots/allocation.png)
 ## Progress
 - [x] Week 1: Causal DAG (DoWhy) and dashboard scaffolding
 - [x] Week 2: Double ML training, propensity score matching and uplift curves
