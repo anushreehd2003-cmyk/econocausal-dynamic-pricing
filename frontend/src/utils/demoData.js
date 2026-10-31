@@ -24,3 +24,13 @@ export async function loadCustomers() {
   });
   return parsed.data;
 }
+
+export async function loadEfficiency() {
+  const res = await fetch("/demo/budget_efficiency.json");
+  try {
+    if (!res.ok) throw new Error();
+    return await res.json();
+  } catch {
+    throw new Error("Could not load /demo/budget_efficiency.json");
+  }
+}

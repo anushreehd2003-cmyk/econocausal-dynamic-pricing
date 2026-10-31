@@ -3,6 +3,7 @@ import "./App.css";
 import UploadView from "./components/UploadView";
 import BudgetView from "./components/BudgetView";
 import UpliftView from "./components/UpliftView";
+import AllocationView from "./components/AllocationView";
 
 export default function App() {
   const [tab, setTab] = useState("upload");
@@ -29,13 +30,20 @@ export default function App() {
         <button className={tab === "uplift" ? "active" : ""} onClick={() => setTab("uplift")}>
           3. Uplift
         </button>
+                <button className={tab === "allocation" ? "active" : ""} onClick={() => setTab("allocation")}>
+          4. Allocation
+        </button>
       </div>
 
       {tab === "upload" && <UploadView dataset={dataset} setDataset={setDataset} />}
       {tab === "budget" && (
         <BudgetView settings={settings} setSettings={setSettings} dataset={dataset} />
       )}
+     
+    
       {tab === "uplift" && <UpliftView dataset={dataset} />}
+            {tab === "allocation" && <AllocationView settings={settings} />}
     </div>
+
   );
 }

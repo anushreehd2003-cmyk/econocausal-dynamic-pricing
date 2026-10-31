@@ -15,8 +15,8 @@ function points(value) {
 export default function UpliftView({ dataset }) {
   const [qini, setQini] = useState(null);
   const [customers, setCustomers] = useState(null);
+  const [benchMs, setBenchMs] = useState(null);
   const [loadMs, setLoadMs] = useState(null);
-  const [processMs, setProcessMs] = useState(null);
   const [error, setError] = useState("");
   const [level, setLevel] = useState(20);
   const [filters, setFilters] = useState({
@@ -34,8 +34,16 @@ export default function UpliftView({ dataset }) {
         if (cancelled) return;
         setQini(q);
         setCustomers(c);
+        
         setLoadMs(Math.round(performance.now() - start));
-      })
+               // One-off benchmark: filter, summarize and bin every customer
+        const t1 = performance.now();
+        const all = filterCustomers(c, {
+          loyalty: "all", recencyMin: 0, recencyMax: 365, heldOutOnly: false,
+        });
+        summarize(all, "ite_20");
+        histogram(all.map((r) => r.ite_20), -0.3, 0.3, BINS);
+        setBenchMs(performance.now() - t1); })
       .catch((e) => {
         if (!cancelled) setError(e.message);
       });
@@ -57,34 +65,15 @@ export default function UpliftView({ dataset }) {
     return { lo, hi };
   }, [customers, key]);
 
-const processed = useMemo(() => {
-  if (!customers) return null;
+  const processed = useMemo(() => {
+    if (!customers) return null;
+    
+    const rows = filterCustomers(customers, filters);
+    const stats = summarize(rows, key);
+    const hist = histogram(rows.map((r) => r[key]), range.lo, range.hi, BINS);
+       return { rows, stats, hist };
+  }, [customers, filters, key, range]);
 
-  const rows = filterCustomers(customers, filters);
-  const stats = summarize(rows, key);
-  const hist = histogram(
-    rows.map((r) => r[key]),
-    range.lo,
-    range.hi,
-    BINS
-  );
-
-  return { rows, stats, hist };
-}, [customers, filters, key, range]);
-
-useEffect(() => {
-  if (!customers) return;
-
-  const start = performance.now();
-
-  const rows = filterCustomers(customers, filters);
-  summarize(rows, key);
-  histogram(rows.map((r) => r[key]), range.lo, range.hi, BINS);
-
-  setProcessMs(performance.now() - start);
-}, [customers, filters, key, range]);
-
- 
   const qiniChart = useMemo(() => {
     if (!qini) return null;
     const data = Object.keys(qini.curves).map((name, i) => ({
@@ -288,11 +277,9 @@ useEffect(() => {
           <div className="stat">
             <strong>{(s.positiveShare * 100).toFixed(1)}%</strong>Predicted to gain buyers
           </div>
-          <div className="stat">
-           <strong>
-  {processMs === null ? "Calculating..." : `${processMs.toFixed(1)} ms`}
-</strong>
-Filter and summarize
+                   <div className="stat">
+            <strong>{benchMs === null ? "..." : benchMs.toFixed(1) + " ms"}</strong>
+            Filter and summarize all customers (measured at load)
           </div>
         </div>
         <p className="small">

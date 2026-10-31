@@ -49,3 +49,43 @@ export function summarizeAllocation(customers, allocation) {
   });
   return { spend, targeted, n10, n20, extraPurchases, extraRevenue };
 }
+
+// Expected result of giving the lowest allowed discount to randomly chosen
+// customers until the budget runs out (the "blanket targeting" baseline).
+export function blanketExpected(customers, budget, levels = LEVELS) {
+  const level = Math.min(...levels);
+  const targeted = Math.min(customers.length, Math.floor(budget / level));
+  let sumEffect = 0;
+  let sumRevenue = 0;
+  for (const c of customers) {
+    sumEffect += c["ite_" + level];
+    sumRevenue += c["ite_" + level] * c.avg_basket_value;
+  }
+  return {
+    level,
+    targeted,
+    extraPurchases: (sumEffect / customers.length) * targeted,
+    extraRevenue: (sumRevenue / customers.length) * targeted,
+  };
+}
+
+// One row per customer for the prescription table, best predicted revenue
+// first. Customers with no discount have a predicted extra revenue of 0.
+export function prescriptionRows(customers, allocation) {
+  const rows = customers.map((c, i) => {
+    const level = allocation[i];
+    const effect = level === 0 ? 0 : c["ite_" + level];
+    return {
+      customer_id: c.customer_id,
+      discount: level,
+      ite_10: c.ite_10,
+      ite_20: c.ite_20,
+      predicted_effect: effect,
+      predicted_extra_revenue: effect * c.avg_basket_value,
+      days_since_last_purchase: c.days_since_last_purchase,
+      loyalty_member: c.loyalty_member,
+    };
+  });
+  rows.sort((a, b) => b.predicted_extra_revenue - a.predicted_extra_revenue);
+  return rows;
+}
