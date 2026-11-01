@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Papa from "papaparse";
 import PlotlyChart from "./PlotlyChart";
-import { loadCustomers, loadEfficiency } from "../utils/demoData";
+import { loadEfficiency } from "../utils/demoData";
 import {
   LEVELS,
   greedyAllocation,
@@ -12,6 +12,37 @@ import {
 
 const PAGE_SIZE = 20;
 
+const VIEWS = {
+  targeted: { label: "Customers with a discount", test: (r) => r.discount > 0 },
+  d10: { label: "$10 discounts only", test: (r) => r.discount === 10 },
+  d20: { label: "$20 discounts only", test: (r) => r.discount === 20 },
+  none: { label: "Customers with no discount", test: (r) => r.discount === 0 },
+  all: { label: "All customers", test: () => true },
+};
+
+const SORTS = {
+  revenue: {
+    label: "Predicted extra revenue (high to low)",
+    cmp: (a, b) => b.predicted_extra_revenue - a.predicted_extra_revenue,
+  },
+  effect10: {
+    label: "Effect of $10 (high to low)",
+    cmp: (a, b) => b.ite_10 - a.ite_10,
+  },
+  effect20: {
+    label: "Effect of $20 (high to low)",
+    cmp: (a, b) => b.ite_20 - a.ite_20,
+  },
+  recency: {
+    label: "Days since last purchase (most recent first)",
+    cmp: (a, b) => a.days_since_last_purchase - b.days_since_last_purchase,
+  },
+  id: {
+    label: "Customer ID (low to high)",
+    cmp: (a, b) => a.customer_id - b.customer_id,
+  },
+};
+
 function money(value) {
   return "$" + Math.round(value).toLocaleString();
 }
@@ -21,21 +52,19 @@ function pts(value) {
   return (p >= 0 ? "+" : "") + p.toFixed(1) + " pts";
 }
 
-export default function AllocationView({ settings }) {
-  const [customers, setCustomers] = useState(null);
+export default function AllocationView({ settings, customers, customersError }) {
   const [efficiency, setEfficiency] = useState(null);
   const [error, setError] = useState("");
-  const [showAll, setShowAll] = useState(false);
+  const [view, setView] = useState("targeted");
+  const [sort, setSort] = useState("revenue");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([loadCustomers(), loadEfficiency()])
-      .then(([c, e]) => {
-        if (cancelled) return;
-        setCustomers(c);
-        setEfficiency(e);
+    loadEfficiency()
+      .then((e) => {
+        if (!cancelled) setEfficiency(e);
       })
       .catch((err) => {
         if (!cancelled) setError(err.message);
@@ -64,11 +93,13 @@ export default function AllocationView({ settings }) {
   const visible = useMemo(() => {
     if (!plan) return [];
     const q = query.trim();
-    let rows = plan.rows;
-    if (!showAll) rows = rows.filter((r) => r.discount > 0);
-    if (q) rows = rows.filter((r) => String(r.customer_id).includes(q));
+    const test = VIEWS[view].test;
+    const rows = plan.rows.filter(
+      (r) => test(r) && (!q || String(r.customer_id).includes(q))
+    );
+    rows.sort(SORTS[sort].cmp);
     return rows;
-  }, [plan, showAll, query]);
+  }, [plan, view, sort, query]);
 
   const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
   const current = Math.min(page, pageCount - 1);
@@ -127,10 +158,11 @@ export default function AllocationView({ settings }) {
     URL.revokeObjectURL(url);
   }
 
-  if (error) {
+  const loadError = customersError || error;
+  if (loadError) {
     return (
       <div className="card">
-        <p className="error">{error}</p>
+        <p className="error">{loadError}</p>
         <p>Generate the demo files from the project root:</p>
         <pre>
           python backend\src\export_demo.py{"\n"}
@@ -210,18 +242,43 @@ export default function AllocationView({ settings }) {
               }}
             />
           </div>
-          <div className="checks">
-            <label>
-              <input
-                type="checkbox"
-                checked={showAll}
-                onChange={() => {
-                  setShowAll(!showAll);
-                  setPage(0);
-                }}
-              />{" "}
-              Include customers with no discount
-            </label>
+          <div>
+            <label htmlFor="view-select">Show</label>
+            <select
+              id="view-select"
+              value={view}
+              onChange={(e) => {
+                setView(e.target.value);
+                setPage(0);
+              }}
+            >
+              {Object.keys(VIEWS).map((key) => (
+                <option
+                  key={key}
+                  value={key}
+                  disabled={(key === "d10" && !useTen) || (key === "d20" && !useTwenty)}
+                >
+                  {VIEWS[key].label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="sort-select">Sort by</label>
+            <select
+              id="sort-select"
+              value={sort}
+              onChange={(e) => {
+                setSort(e.target.value);
+                setPage(0);
+              }}
+            >
+              {Object.keys(SORTS).map((key) => (
+                <option key={key} value={key}>
+                  {SORTS[key].label}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <button className="primary" onClick={downloadCsv}>

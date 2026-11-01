@@ -29,6 +29,14 @@ See `docs/week1_summary.md` and `backend/notebooks/01_causal_walkthrough.ipynb`.
 
 Details: `docs/propensity_analysis.md`, `docs/matching_analysis.md`, `docs/dml_analysis.md`, `docs/refutation_analysis.md`, `docs/model_comparison.md`.
 
+## Week 3 Results
+- SciPy budget optimizer (exact integer program) chooses $0, $10 or $20 per customer to maximize predicted extra revenue within the budget
+- On 3,000 held-out customers with a $1,500 budget (equal to $5,000 for 10,000 customers), targeting earned $1,667 of true extra revenue against $206 for random $10 discounts, and reached about 78% of the oracle ceiling ($2,128)
+- Across budgets from $500 to $20,000 (per 10,000 customers), optimized targeting earned 4.4 to 8.1 times the extra revenue of random blanket discounts; greedy was within about 1% of the exact optimum
+- The dashboard Allocation tab prescribes a discount for each of 10,000 customers for any budget, using a JavaScript greedy allocator tested against the Python version
+
+Details: `docs/optimizer_analysis.md`, `docs/efficiency_analysis.md`.
+
 ## Project Structure
 - `backend/src`: data generator, causal graph, propensity, matching, Double ML, refutation, model comparison
 - `backend/notebooks`: experiments and analysis
