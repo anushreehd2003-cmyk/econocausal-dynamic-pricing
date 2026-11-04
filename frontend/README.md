@@ -56,7 +56,7 @@ Standard ML predicts correlation, not causation. A model that flags a user as li
 
 ## Progress
 - [x] Week 1: Causal DAG (DoWhy) and dashboard scaffolding
-- [ ] Week 2: Double ML training, propensity score matching and uplift curves
+- [X ] Week 2: Double ML training, propensity score matching and uplift curves
 - [ ] Mid Review: refutation tests and data load validation
-- [ ] Week 3: SciPy budget optimizer and allocation matrix UI
+- [ x] Week 3: SciPy budget optimizer and allocation matrix UI
 - [ ] Week 4: REST API, drift detector and final polish

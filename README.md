@@ -62,6 +62,15 @@ Optional analyses: `causal_graph.py`, `propensity.py`, `matching.py` and `refuta
     npm install
     npm run dev
 
+ ## Run the API
+    python backend\src\train_final_model.py
+    python -m uvicorn api:app --app-dir backend\src --port 8000
+
+Open http://localhost:8000/docs for interactive documentation. Endpoints:
+- `GET /health`: model status
+- `POST /predict`: predicted effect of a $10 and a $20 discount per customer, with 90% intervals
+- `POST /allocate`: discount prescription for a budget (`greedy` by default, `exact` is slower)
+
 ## Dashboard preview
 ![Upload](docs/screenshots/upload.png)
 ![Budget](docs/screenshots/budget.png)
@@ -71,7 +80,7 @@ Optional analyses: `causal_graph.py`, `propensity.py`, `matching.py` and `refuta
 - [x] Week 1: Causal DAG (DoWhy) and dashboard scaffolding
 - [x] Week 2: Double ML training, propensity score matching and uplift curves
 - [ ] Mid Review: refutation tests and data load validation
-- [ ] Week 3: SciPy budget optimizer and allocation matrix UI
+- [x] Week 3: SciPy budget optimizer and allocation matrix UI
 - [ ] Week 4: REST API, drift detector and final polish
 
 

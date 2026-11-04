@@ -226,3 +226,4 @@ data/*.csv
 
 !data/retail_campaign_sample.csv
 !data/ite_predictions_sample.csv
+models/
