@@ -36,7 +36,7 @@ def main():
     model = fit_dml(X, Y, T, kind=args.model)
     print(f"Trained in {time.time() - start:.0f} seconds.")
 
-    bundle = make_bundle(model, X, kind=args.model)
+    bundle = make_bundle(model, X, kind=args.model, Y=Y, T=T)
     path = save_bundle(bundle)
     print(f"Saved {path} ({path.stat().st_size / 1e6:.1f} MB)")
 

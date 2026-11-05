@@ -36,10 +36,13 @@ def _versions():
     }
 
 
-def make_bundle(model, X, kind):
-    """Model plus the metadata the API needs to use it safely."""
+def make_bundle(model, X, kind, Y=None, T=None):
+    """Model plus the metadata the API needs to use it safely.
+
+    Pass Y (purchased) and T (discount) to also store the reference data used
+    by the drift detector."""
     X = np.asarray(X, dtype=float)
-    return {
+    bundle = {
         "model": model,
         "kind": kind,
         "features": list(FEATURES),
@@ -52,6 +55,14 @@ def make_bundle(model, X, kind):
         },
         "library_versions": _versions(),
     }
+    if Y is not None and T is not None:
+        untreated = np.asarray(T) == 0
+        bundle["reference"] = {
+            "X": X,
+            "untreated_n": int(untreated.sum()),
+            "untreated_buys": int(np.asarray(Y, dtype=float)[untreated].sum()),
+        }
+    return bundle
 
 
 def save_bundle(bundle, path=None):

@@ -22,6 +22,7 @@ from model_store import (
     range_warnings,
     version_warnings,
 )
+from drift import MIN_BATCH, drift_report, untreated_counts
 from optimizer import evaluate, greedy_allocation, optimize_allocation, values_from_ite
 
 MAX_CUSTOMERS = 10_000
@@ -39,6 +40,15 @@ class Customer(BaseModel):
 
 class CustomerWithBasket(Customer):
     avg_basket_value: float = Field(ge=0)
+
+
+class DriftCustomer(Customer):
+    discount: Literal[0, 10, 20] | None = None
+    purchased: Literal[0, 1] | None = None
+
+
+class DriftRequest(BaseModel):
+    customers: list[DriftCustomer] = Field(min_length=MIN_BATCH, max_length=MAX_CUSTOMERS)
 
 
 class PredictRequest(BaseModel):
@@ -77,6 +87,7 @@ def create_app(bundle=None):
 
     app = FastAPI(title="EconoCausal API", version="1.0.0", lifespan=lifespan)
     app.state.bundle = bundle
+    app.state.ref_effects = None  # reference predictions, computed on first /drift call
 
     origins = os.environ.get(
         "ECONOCAUSAL_CORS", "http://localhost:5173,http://127.0.0.1:5173"
@@ -98,8 +109,8 @@ def create_app(bundle=None):
 
     @app.get("/", include_in_schema=False)
     def root():
-        return RedirectResponse(url="/docs")  
-    
+        return RedirectResponse(url="/docs")
+
     @app.get("/health")
     def health(request: Request):
         b = request.app.state.bundle
@@ -121,6 +132,7 @@ def create_app(bundle=None):
             "levels": b["levels"],
             "features": b["features"],
             "library_versions": b["library_versions"],
+            "drift_reference_available": "reference" in b,
             "warnings": version_warnings(b),
         }
 
@@ -188,6 +200,32 @@ def create_app(bundle=None):
             "allocation": rows,
             "warnings": range_warnings(b, X),
         }
+
+    @app.post("/drift")
+    def drift(req: DriftRequest, request: Request):
+        b = get_bundle(request)
+        ref = b.get("reference")
+        if ref is None:
+            raise HTTPException(
+                status_code=409,
+                detail="This model file has no reference data. "
+                       "Rerun: python backend\\src\\train_final_model.py",
+            )
+        X = to_matrix(req.customers, b["features"])
+        if request.app.state.ref_effects is None:
+            request.app.state.ref_effects = predict_effects(b, ref["X"])
+        cur_effects = predict_effects(b, X)
+
+        def column(name):
+            values = [getattr(c, name) for c in req.customers]
+            return np.array([np.nan if v is None else v for v in values], dtype=float)
+
+        return drift_report(
+            b["features"], ref["X"], X,
+            request.app.state.ref_effects, cur_effects,
+            (ref["untreated_buys"], ref["untreated_n"]),
+            untreated_counts(column("discount"), column("purchased")),
+        )
 
     return app
 

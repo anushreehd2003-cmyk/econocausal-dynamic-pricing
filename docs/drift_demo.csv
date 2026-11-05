@@ -1,0 +1,25 @@
+scenario,variable,psi,severity
+A. No change,age,0.0014,ok
+A. No change,income,0.0025,ok
+A. No change,loyalty_member,0.0004,ok
+A. No change,past_purchases,0.0021,ok
+A. No change,days_since_last_purchase,0.0056,ok
+A. No change,ite_10,0.0035,ok
+A. No change,ite_20,0.0048,ok
+A. No change,no-discount purchase rate,,ok
+"B. Less active, less loyal",age,0.0014,ok
+"B. Less active, less loyal",income,0.0025,ok
+"B. Less active, less loyal",loyalty_member,0.4206,alert
+"B. Less active, less loyal",past_purchases,0.0021,ok
+"B. Less active, less loyal",days_since_last_purchase,0.3057,alert
+"B. Less active, less loyal",ite_10,0.0099,ok
+"B. Less active, less loyal",ite_20,0.0464,ok
+"B. Less active, less loyal",no-discount purchase rate,,ok
+C. B plus lower purchasing,age,0.0014,ok
+C. B plus lower purchasing,income,0.0025,ok
+C. B plus lower purchasing,loyalty_member,0.4206,alert
+C. B plus lower purchasing,past_purchases,0.0021,ok
+C. B plus lower purchasing,days_since_last_purchase,0.3057,alert
+C. B plus lower purchasing,ite_10,0.0099,ok
+C. B plus lower purchasing,ite_20,0.0464,ok
+C. B plus lower purchasing,no-discount purchase rate,,alert
