@@ -195,7 +195,7 @@ export default function AllocationView({ settings, customers, customersError }) 
   const s = plan.summary;
   const ratio =
     plan.blanket.extraRevenue > 0 ? s.extraRevenue / plan.blanket.extraRevenue : null;
-  const gain = s.extraRevenue - plan.blanket.extraRevenue;
+
   return (
     <div>
       <div className="card">
@@ -205,9 +205,8 @@ export default function AllocationView({ settings, customers, customersError }) 
           {s.targeted.toLocaleString()} customers ({s.n10} at $10, {s.n20} at $20)
           and is predicted to add about {s.extraPurchases.toFixed(0)} purchases and{" "}
           {money(s.extraRevenue)} in gross revenue
-          {gain > 0
-            ? ", " + money(gain) + " more than the same budget earns when spread over random customers" +
-              (ratio ? " (about " + ratio.toFixed(1) + " times as much)." : ".")
+          {ratio
+            ? ", about " + ratio.toFixed(1) + " times what the same budget earns when spread over random customers."
             : "."}
         </p>
         <div className="stats">

@@ -4,7 +4,6 @@ import UploadView from "./components/UploadView";
 import BudgetView from "./components/BudgetView";
 import UpliftView from "./components/UpliftView";
 import AllocationView from "./components/AllocationView";
-import DriftPanel from "./components/DriftPanel";
 import { useDemoCustomers } from "./utils/useDemoCustomers";
 
 export default function App() {
@@ -38,14 +37,7 @@ export default function App() {
         </button>
       </div>
 
-      {tab === "upload" && (
-        <>
-          <UploadView dataset={dataset} setDataset={setDataset} />
-          {dataset && (
-            <DriftPanel key={dataset.fileName + ":" + dataset.rows.length} dataset={dataset} />
-          )}
-        </>
-      )}
+      {tab === "upload" && <UploadView dataset={dataset} setDataset={setDataset} />}
       {tab === "budget" && (
         <BudgetView
           settings={settings}
