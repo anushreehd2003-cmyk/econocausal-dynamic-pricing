@@ -21,3 +21,12 @@ customers per request. Invalid input returns 422.
 - The model file is a pickle: only load files you created yourself. The API reports a warning if library versions differ from training.
 - CORS allows the Vite dev server (localhost:5173) so the dashboard can call the API.
 - There is no authentication, so run it locally only.
+
+## Dashboard integration
+The Upload tab has a Data health check. It sends the uploaded file to `POST /drift`
+(features plus `discount` and `purchased`, at most 10,000 valid rows, at least 100)
+and shows the status, plain-language messages and a table of PSI values.
+Rows with missing or invalid values are left out and counted. The dashboard reads
+the API address from `VITE_API_URL` (default `http://localhost:8000`).
+The Allocation tab does not call the API: it uses the precomputed predictions
+and the in-browser greedy allocator so that budget changes respond instantly.
